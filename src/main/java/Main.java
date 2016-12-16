@@ -3,6 +3,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,17 +29,15 @@ public class Main {
         ObjectMapper objectMapper = new ObjectMapper();
         //Set pretty printing of json
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        String arrayToJson = "";
         try {
             FileWriter fw = new FileWriter("phones.json");
-            for(Phone p : allPhones){
-                String arrayToJson = objectMapper.writeValueAsString(allPhones);
-                System.out.println("1. Convert List of person objects to JSON :");
-                System.out.println(arrayToJson);
-                fw.write(arrayToJson);
-
-            }
+            arrayToJson = objectMapper.writeValueAsString(allPhones);
+            System.out.println("1. Convert List of person objects to JSON :");
+            System.out.println(arrayToJson);
+            fw.write(arrayToJson);
             fw.close();
-            System.out.println("Done " + allPhones.size() );
+            System.out.println("Done " + allPhones.size());
         } catch (JsonGenerationException e) {
             e.printStackTrace();
         } catch (JsonMappingException e) {
