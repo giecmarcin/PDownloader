@@ -54,7 +54,6 @@ public class PhonesDownloader {
                 tempBuiltInMemory = tempBuiltInMemory.substring(0, tempBuiltInMemory.length() - 2).replaceAll(",", ".");
                 phone.setBuiltInMemory(Double.parseDouble(tempBuiltInMemory));
 
-                phone.setBuiltInMemory(0);
 
 
                 phone.setTypeOfDisplay(allDetailsForPhone.get(0).select("td").get(9).text()); //type of display
