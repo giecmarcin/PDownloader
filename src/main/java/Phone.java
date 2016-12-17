@@ -25,12 +25,13 @@ public class Phone {
     private double width;
     private double height;
     private double weight;
-    private String colour;
+    private String colour="";
+    private String[] imagesUrl;
 
     public Phone() {
     }
 
-    public Phone(String brand, String fullName, double price, String processor, String graphics, double ram, double builtInMemory, String typeOfDisplay, double sizeOfDisplay, String resolutionOfDisplay, String communication, String navigation, String connectors, double capacityOfBattery, String operatingSystem, double frontCameraMPX, double cameraMPX, String flashLamp, double thickness, double width, double height, double weight, String colour) {
+    public Phone(String brand, String fullName, double price, String processor, String graphics, double ram, double builtInMemory, String typeOfDisplay, double sizeOfDisplay, String resolutionOfDisplay, String communication, String navigation, String connectors, double capacityOfBattery, String operatingSystem, double frontCameraMPX, double cameraMPX, String flashLamp, double thickness, double width, double height, double weight, String colour, String[] imagesUrl) {
         this.brand = brand;
         this.fullName = fullName;
         this.price = price;
@@ -54,9 +55,10 @@ public class Phone {
         this.height = height;
         this.weight = weight;
         this.colour = colour;
+        this.imagesUrl = imagesUrl;
     }
 
-    public Phone(int id, String brand, String fullName, double price, String processor, String graphics, double ram, double builtInMemory, String typeOfDisplay, double sizeOfDisplay, String resolutionOfDisplay, String communication, String navigation, String connectors, double capacityOfBattery, String operatingSystem, double frontCameraMPX, double cameraMPX, String flashLamp, double thickness, double width, double height, double weight, String colour) {
+    public Phone(int id, String brand, String fullName, double price, String processor, String graphics, double ram, double builtInMemory, String typeOfDisplay, double sizeOfDisplay, String resolutionOfDisplay, String communication, String navigation, String connectors, double capacityOfBattery, String operatingSystem, double frontCameraMPX, double cameraMPX, String flashLamp, double thickness, double width, double height, double weight, String colour, String[] imagesUrl) {
         this.id = id;
         this.brand = brand;
         this.fullName = fullName;
@@ -81,6 +83,15 @@ public class Phone {
         this.height = height;
         this.weight = weight;
         this.colour = colour;
+        this.imagesUrl = imagesUrl;
+    }
+
+    public String[] getImagesUrl() {
+        return imagesUrl;
+    }
+
+    public void setImagesUrl(String[] imagesUrl) {
+        this.imagesUrl = imagesUrl;
     }
 
     public int getId() {

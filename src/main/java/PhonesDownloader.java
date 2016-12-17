@@ -13,8 +13,10 @@ import java.util.regex.Pattern;
 public class PhonesDownloader {
 
     boolean addToList = true;
+    public int numberOfErrors=0;
 
     public List<Phone> download(String url) throws IOException {
+
         Connection connect = Jsoup.connect(url).timeout(10 * 1000);
         Document document = connect.get();
         Elements all = document.getElementsByClass("product-item");//.tagName("data-product-name");//data-products-list-name=
@@ -23,7 +25,7 @@ public class PhonesDownloader {
         List<Phone> phones = new ArrayList<Phone>();
         //System.out.println("Ilosć:  " + all.size());
         Phone phone = null;
-        for (int i = 0; i < all.size(); i++) {
+        for (int i = 0; i <all.size(); i++) {
             //try {
             System.out.println(i);
             phone = new Phone();
@@ -35,22 +37,46 @@ public class PhonesDownloader {
             phone.setPrice(price);
             String urlDetails = all.get(i).getElementsByClass("description-wrapper").select("a").first().attr("abs:href");
 
+            String tempDisplayOfSize = all.get(i).getElementsByClass("features").select("ul").select("li").get(0).text();
+            tempDisplayOfSize = tempDisplayOfSize.replaceAll(",",".");
+            //System.out.println(findNumberInString(tempDisplayOfSize));
+            phone.setSizeOfDisplay(findNumberInString(tempDisplayOfSize));
+
+            String processor = all.get(i).getElementsByClass("features").select("ul").select("li").get(1).text();
+            phone.setProcessor(processor);
+            String tempRam = all.get(i).getElementsByClass("features").select("ul").select("li").get(2).text();
+            tempRam = tempRam.replaceAll(",",".");
+            if(tempRam.contains("+")){
+                int index = tempRam.indexOf("+");
+                if(index!=-1){
+                    tempRam = tempRam.substring(0, index);
+                }
+            }
+            phone.setRam(findNumberInString(tempRam));
+            String operatingSystem = all.get(i).getElementsByClass("features").select("ul").select("li").get(3).text();
+            phone.setOperatingSystem(operatingSystem);
+            //System.out.println(all.get(i).getElementsByClass("features").select("ul").select("li").get(3).text());
+
+
+
+
+
             //For read details
             Connection connect2 = Jsoup.connect(urlDetails).timeout(10 * 1000);
             Document document2 = connect2.get();
             Elements allDetailsForPhone = document2.getElementsByClass("js-table-preview");
-            phone.setProcessor(allDetailsForPhone.get(0).select("td").get(1).text());//processor
+            ///phone.setProcessor(allDetailsForPhone.get(0).select("td").get(1).text());//processor
             phone.setGraphics(allDetailsForPhone.get(0).select("td").get(3).text()); //graphics
 
 
-            try {
-                double ram = findNumberInString(allDetailsForPhone.get(0).select("td").get(5).text());//ram
-                phone.setRam(ram);
-            } catch (Exception ex) {
-                double[] tab = {2.0, 3.0, 3.5, 4.0, 6.0, 12.0};
-                Random r = new Random();
-                phone.setBuiltInMemory(tab[r.nextInt(6)]);
-            }
+//            try {
+//                double ram = findNumberInString(allDetailsForPhone.get(0).select("td").get(5).text());//ram
+//                phone.setRam(ram);
+//            } catch (Exception ex) {
+//                double[] tab = {2.0, 3.0, 3.5, 4.0, 6.0, 12.0};
+//                Random r = new Random();
+//                phone.setBuiltInMemory(tab[r.nextInt(6)]);
+//            }
 
 
             //double builtInMemory =  findNumberInString(allDetailsForPhone.get(0).select("td").get(7).text());//builtInMemory
@@ -67,20 +93,21 @@ public class PhonesDownloader {
                 double[] tab = {5.0, 6.0, 8.0, 16.0, 32.0};
                 Random r = new Random();
                 phone.setBuiltInMemory(tab[r.nextInt(5)]);
+                System.out.println("Był ex" + e.getMessage() + " "+ tempBuiltInMemory);
+                numberOfErrors+=1;
             }
 
 
             phone.setTypeOfDisplay(allDetailsForPhone.get(0).select("td").get(9).text()); //type of display
-            String tempSize = allDetailsForPhone.get(0).select("td").get(11).text();
-            tempSize = tempSize.substring(0, tempSize.length() - 1);
-
-            try {
-                phone.setSizeOfDisplay(Double.parseDouble(tempSize));
-            } catch (Exception ex) {
-                double[] tab = {4.0, 4.5, 5.0, 5.0, 5.5, 6.0, 6.5, 7.0};
-                Random r = new Random();
-                phone.setSizeOfDisplay(tab[r.nextInt(8)]);
-            }
+//            String tempSize = allDetailsForPhone.get(0).select("td").get(11).text();
+//            tempSize = tempSize.substring(0, tempSize.length() - 1);
+//            try {
+//                phone.setSizeOfDisplay(Double.parseDouble(tempSize));
+//            } catch (Exception ex) {
+//                double[] tab = {4.0, 4.5, 5.0, 5.0, 5.5, 6.0, 6.5, 7.0};
+//                Random r = new Random();
+//                phone.setSizeOfDisplay(tab[r.nextInt(8)]);
+//            }
 
 
             phone.setResolutionOfDisplay(allDetailsForPhone.get(0).select("td").get(13).text());
@@ -91,9 +118,11 @@ public class PhonesDownloader {
                 phone.setCapacityOfBattery(findNumberInString(allDetailsForPhone.get(0).select("td").get(21).text()));
             }catch (Exception e){
                 phone.setCapacityOfBattery(2500);
+                System.out.println("Był ex");
+                numberOfErrors+=1;
             }
 
-            phone.setOperatingSystem(allDetailsForPhone.get(0).select("td").get(23).text());
+            //phone.setOperatingSystem(allDetailsForPhone.get(0).select("td").get(23).text());
 
             String[] splitCamera = allDetailsForPhone.get(0).select("td").get(25).text().split("\\s");
             //System.out.println(splitCamera[0]);
@@ -103,6 +132,8 @@ public class PhonesDownloader {
                 double[] tab = {5.0, 6.0, 8.0, 12.0};
                 Random r = new Random();
                 phone.setCameraMPX(tab[r.nextInt(4)]);
+                System.out.println("Był ex");
+                numberOfErrors+=1;
             }
 
 
@@ -112,6 +143,8 @@ public class PhonesDownloader {
                 double[] tab = {2.0, 3.0, 4.5, 5.0, 8.0};
                 Random r = new Random();
                 phone.setFrontCameraMPX(tab[r.nextInt(5)]);
+                System.out.println("Był ex");
+                numberOfErrors+=1;
             }
 
             phone.setFlashLamp(allDetailsForPhone.get(0).select("td").get(27).text());
@@ -128,6 +161,8 @@ public class PhonesDownloader {
                 double[] tab = {8.95, 8.5, 9.5, 9.0, 8.0, 9.5, 10.0, 7.5, 7.0};
                 Random r = new Random();
                 phone.setThickness(tab[r.nextInt(9)]);
+                System.out.println("Był ex");
+                numberOfErrors+=1;
             }
 
             try {
@@ -137,6 +172,8 @@ public class PhonesDownloader {
                 double[] tab = {70.0, 71.0, 71.5, 72.5, 73.0, 76.5, 78.0, 78, 5, 80.0, 80.5, 81.5, 82.5, 84.5, 85.0};
                 Random r = new Random();
                 phone.setWidth(tab[r.nextInt(15)]);
+                System.out.println("Był ex");
+                numberOfErrors+=1;
             }
 
 
@@ -146,6 +183,8 @@ public class PhonesDownloader {
                 double[] tab = {140.0, 144.0, 145.0, 145.5, 148.0, 148.5, 150.5, 160.5, 165.5, 170.6};
                 Random r = new Random();
                 phone.setHeight(tab[r.nextInt(10)]);
+                System.out.println("Był ex");
+                numberOfErrors+=1;
             }
 
             try {
@@ -154,6 +193,8 @@ public class PhonesDownloader {
                 double[] tab = {140.0, 144.0, 145.0, 145.5, 148.0, 148.5, 150.5, 160.5, 165.5, 170.6};
                 Random r = new Random();
                 phone.setWeight(tab[r.nextInt(10)]);
+                System.out.println("Był ex");
+                numberOfErrors+=1;
             }
 
 
