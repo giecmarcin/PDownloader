@@ -19,7 +19,7 @@ public class PhonesDownloader {
         List<String> urls = new ArrayList<>();
 
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < all.size(); i++) {
             String urlDetails = all.get(i).getElementsByClass("description-wrapper").select("a").first().attr("abs:href");
             urls.add(urlDetails);
         }
@@ -34,6 +34,13 @@ public class PhonesDownloader {
             String brand = document2.getElementsByClass("subheader").select("span").first().text();
             values.put("Marka", brand);
             String price = document2.getElementsByClass("clearfix").first().text().replaceAll(",", ".");
+            if(price.contains(":")){
+                int index = price.indexOf(":");
+                StringBuffer s = new StringBuffer(price);
+                s.deleteCharAt(index);
+                //s.d
+                price = s.toString();
+            }
             //System.out.println(price);
             values.put("Cena", price);
             Elements allDetailsForPhone = document2.getElementsByClass("js-table-preview");
@@ -53,7 +60,7 @@ public class PhonesDownloader {
         return values;
     }
 
-    public void convertToList() {
+    public List<Phone> convertToList() {
         List<Phone> phones = new ArrayList<>();
         Phone phone = null;
         for (TreeMap<String, String> dataForOnePhone : dataForPhones) {
@@ -61,7 +68,7 @@ public class PhonesDownloader {
             //System.out.println(dataForOnePhone.get("Cena").replaceAll(",","."));
             phone.setBrand(dataForOnePhone.get("Marka"));
             phone.setFullName(dataForOnePhone.get("Nazwa"));
-            phone.setPrice(findNumberInString(dataForOnePhone.get("Cena")));
+            phone.setPrice(findNumberInString(dataForOnePhone.get("Cena").replaceAll("\\s++","")));
             phone.setProcessor(dataForOnePhone.get("Procesor"));
             phone.setGraphics(dataForOnePhone.get("Układ graficzny"));
 
@@ -80,8 +87,31 @@ public class PhonesDownloader {
             phone.setResolutionOfDisplay(dataForOnePhone.get("Rozdzielczość ekranu"));
             String tempCommunity[] = dataForOnePhone.get("Łączność").split("\\s+");
             phone.setCommunication(tempCommunity);
+            phone.setNavigation(dataForOnePhone.get("System nawigacji satelitarnej"));
+            phone.setConnectors(dataForOnePhone.get("Złącza"));
+            phone.setCapacityOfBattery(findNumberInString(dataForOnePhone.get("Bateria")));
+            phone.setOperatingSystem(dataForOnePhone.get("Zainstalowany system operacyjny"));
+
+            String tempCamera[] = dataForOnePhone.get("Aparat").replaceAll(",",".").split("-");
+            phone.setCameraMPX(findNumberInString(tempCamera[0]));
+            if(tempCamera.length>=2){
+                phone.setFrontCameraMPX(findNumberInString(tempCamera[1]));
+            }
+            phone.setFlashLamp(dataForOnePhone.get("Lampa błyskowa"));
+            phone.setResolutionRecordingVideo(dataForOnePhone.get("Rozdzielczość nagrywania wideo"));
+            phone.setThickness(findNumberInString(dataForOnePhone.get("Grubość").replaceAll(",",".")));
+            phone.setWidth(findNumberInString(dataForOnePhone.get("Szerokość").replaceAll(",",".")));
+            phone.setHeight(findNumberInString(dataForOnePhone.get("Wysokość").replaceAll(",",".")));
+            phone.setWeight(findNumberInString(dataForOnePhone.get("Waga").replaceAll(",",".")));
+            phone.setColour(dataForOnePhone.get("Kolor"));
+            phone.setExtraInfo(dataForOnePhone.get("Dodatkowe informacje"));
+            phone.setIncludedAccessories(dataForOnePhone.get("Dołączone akcesoria"));
+            phone.setGuarantee(dataForOnePhone.get("Gwarancja"));
+
+            //pobierz jeszcze zdjecia
             phones.add(phone);
         }
+        return phones;
     }
 
     private Double findNumberInString(String text) {
@@ -90,7 +120,9 @@ public class PhonesDownloader {
         Matcher m = p.matcher(text);
         while (m.find()) {
             sBuffer.append(m.group());
+
         }
+        System.out.println(sBuffer);
         return Double.parseDouble(sBuffer.toString());
     }
 }

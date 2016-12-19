@@ -29,6 +29,8 @@ public class Phone {
     private String[] imagesUrl;
     private String extraInfo;
     private String guarantee;
+    private String resolutionRecordingVideo;
+    private String includedAccessories;
 
     public Phone() {
     }
@@ -247,5 +249,21 @@ public class Phone {
 
     public void setGuarantee(String guarantee) {
         this.guarantee = guarantee;
+    }
+
+    public String getResolutionRecordingVideo() {
+        return resolutionRecordingVideo;
+    }
+
+    public void setResolutionRecordingVideo(String resolutionRecordingVideo) {
+        this.resolutionRecordingVideo = resolutionRecordingVideo;
+    }
+
+    public String getIncludedAccessories() {
+        return includedAccessories;
+    }
+
+    public void setIncludedAccessories(String includedAccessories) {
+        this.includedAccessories = includedAccessories;
     }
 }
