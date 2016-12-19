@@ -13,7 +13,7 @@ public class Phone {
     private String typeOfDisplay;
     private double sizeOfDisplay;
     private String resolutionOfDisplay;
-    private String communication;
+    private String[] communication;
     private String navigation;
     private String connectors;
     private double capacityOfBattery;
@@ -27,63 +27,10 @@ public class Phone {
     private double weight;
     private String colour="";
     private String[] imagesUrl;
+    private String extraInfo;
+    private String guarantee;
 
     public Phone() {
-    }
-
-    public Phone(String brand, String fullName, double price, String processor, String graphics, double ram, double builtInMemory, String typeOfDisplay, double sizeOfDisplay, String resolutionOfDisplay, String communication, String navigation, String connectors, double capacityOfBattery, String operatingSystem, double frontCameraMPX, double cameraMPX, String flashLamp, double thickness, double width, double height, double weight, String colour, String[] imagesUrl) {
-        this.brand = brand;
-        this.fullName = fullName;
-        this.price = price;
-        this.processor = processor;
-        this.graphics = graphics;
-        this.ram = ram;
-        this.builtInMemory = builtInMemory;
-        this.typeOfDisplay = typeOfDisplay;
-        this.sizeOfDisplay = sizeOfDisplay;
-        this.resolutionOfDisplay = resolutionOfDisplay;
-        this.communication = communication;
-        this.navigation = navigation;
-        this.connectors = connectors;
-        this.capacityOfBattery = capacityOfBattery;
-        this.operatingSystem = operatingSystem;
-        this.frontCameraMPX = frontCameraMPX;
-        this.cameraMPX = cameraMPX;
-        this.flashLamp = flashLamp;
-        this.thickness = thickness;
-        this.width = width;
-        this.height = height;
-        this.weight = weight;
-        this.colour = colour;
-        this.imagesUrl = imagesUrl;
-    }
-
-    public Phone(int id, String brand, String fullName, double price, String processor, String graphics, double ram, double builtInMemory, String typeOfDisplay, double sizeOfDisplay, String resolutionOfDisplay, String communication, String navigation, String connectors, double capacityOfBattery, String operatingSystem, double frontCameraMPX, double cameraMPX, String flashLamp, double thickness, double width, double height, double weight, String colour, String[] imagesUrl) {
-        this.id = id;
-        this.brand = brand;
-        this.fullName = fullName;
-        this.price = price;
-        this.processor = processor;
-        this.graphics = graphics;
-        this.ram = ram;
-        this.builtInMemory = builtInMemory;
-        this.typeOfDisplay = typeOfDisplay;
-        this.sizeOfDisplay = sizeOfDisplay;
-        this.resolutionOfDisplay = resolutionOfDisplay;
-        this.communication = communication;
-        this.navigation = navigation;
-        this.connectors = connectors;
-        this.capacityOfBattery = capacityOfBattery;
-        this.operatingSystem = operatingSystem;
-        this.frontCameraMPX = frontCameraMPX;
-        this.cameraMPX = cameraMPX;
-        this.flashLamp = flashLamp;
-        this.thickness = thickness;
-        this.width = width;
-        this.height = height;
-        this.weight = weight;
-        this.colour = colour;
-        this.imagesUrl = imagesUrl;
     }
 
     public String[] getImagesUrl() {
@@ -182,11 +129,11 @@ public class Phone {
         this.resolutionOfDisplay = resolutionOfDisplay;
     }
 
-    public String getCommunication() {
+    public String[] getCommunication() {
         return communication;
     }
 
-    public void setCommunication(String communication) {
+    public void setCommunication(String[] communication) {
         this.communication = communication;
     }
 
@@ -284,5 +231,21 @@ public class Phone {
 
     public void setColour(String colour) {
         this.colour = colour;
+    }
+
+    public String getExtraInfo() {
+        return extraInfo;
+    }
+
+    public void setExtraInfo(String extraInfo) {
+        this.extraInfo = extraInfo;
+    }
+
+    public String getGuarantee() {
+        return guarantee;
+    }
+
+    public void setGuarantee(String guarantee) {
+        this.guarantee = guarantee;
     }
 }

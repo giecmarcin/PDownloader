@@ -10,84 +10,77 @@ import java.util.regex.Pattern;
 
 public class PhonesDownloader {
     TreeMap<String, String> values = new TreeMap<>();
+    List<TreeMap<String, String>> dataForPhones = new ArrayList<>();
 
     public TreeMap<String, String> download(String url) throws IOException {
-//        TreeMap<String, String> values = new TreeMap<>();
         Connection connect = Jsoup.connect(url).timeout(10 * 1000);
         Document document = connect.get();
         Elements all = document.getElementsByClass("product-item");//.tagName("data-product-name");//data-products-list-name=
+        List<String> urls = new ArrayList<>();
 
-        for (int i = 0; i < 1; i++) {
-            System.out.println("Numer: " + i);
-            String brand = all.get(i).attr("data-product-brand");
-            values.put("Producent", brand);
 
-            String fullName = all.get(i).attr("data-product-name");
-            values.put("Nazwa", fullName);
-            String price = all.get(i).attr("data-product-price");
-            values.put("Cena", price);
+        for (int i = 0; i < 2; i++) {
             String urlDetails = all.get(i).getElementsByClass("description-wrapper").select("a").first().attr("abs:href");
-            values.put("xKomURL", urlDetails);
-
-            //For read details
-            Connection connect2 = Jsoup.connect(urlDetails).timeout(10 * 1000);
+            urls.add(urlDetails);
+        }
+        System.out.println(urls.size());
+        for (String u : urls) {
+            values = new TreeMap<>();
+            //System.out.println(u);
+            Connection connect2 = Jsoup.connect(u).timeout(10 * 2000);
             Document document2 = connect2.get();
+            String fullName = document2.getElementsByClass("product-info").select("h1").text();
+            values.put("Nazwa", fullName);
+            String brand = document2.getElementsByClass("subheader").select("span").first().text();
+            values.put("Marka", brand);
+            String price = document2.getElementsByClass("clearfix").first().text().replaceAll(",", ".");
+            //System.out.println(price);
+            values.put("Cena", price);
             Elements allDetailsForPhone = document2.getElementsByClass("js-table-preview");
 
-            int numberOfRows = allDetailsForPhone.select("table").get(i).select("th").size();
+            int numberOfRows = allDetailsForPhone.select("table").get(0).select("th").size();
             List<String> keys = new ArrayList<>();
             for (int m = 0; m < numberOfRows; m++) {
-                String key = allDetailsForPhone.select("table").get(i).select("th").get(m).text();
-                String val = allDetailsForPhone.select("table").get(i).getElementsByClass("col-xs-9").get(m).text();
+                String key = allDetailsForPhone.select("table").get(0).select("th").get(m).text();
+                String val = allDetailsForPhone.select("table").get(0).getElementsByClass("col-xs-9").get(m).text();
                 values.put(key, val);
+                //System.out.println(key + ": " + val);
             }
-
-
+            dataForPhones.add(values);
         }
-//        for (Map.Entry<String, String> entry : values.entrySet()) {
-//            System.out.println(entry.getKey() + ": " + entry.getValue());
-//        }
+
+
         return values;
     }
 
     public void convertToList() {
         List<Phone> phones = new ArrayList<>();
         Phone phone = null;
-        for (Map.Entry<String, String> entry : values.entrySet()) {
+        for (TreeMap<String, String> dataForOnePhone : dataForPhones) {
             phone = new Phone();
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-            String key = entry.getKey();
-            String value = entry.getValue();
-            if (key.contains("Aparat")) {
-                System.out.println("Tutaj");
-                String[] temp = value.split("\\s+");
-                List<Double> camera = new ArrayList<>();
-                for (String s : temp) {
-                    try{
-                        double tempCamera = Double.parseDouble(s.replaceAll(",","."));
-                        camera.add(tempCamera);
-                    }catch (Exception e){
+            //System.out.println(dataForOnePhone.get("Cena").replaceAll(",","."));
+            phone.setBrand(dataForOnePhone.get("Marka"));
+            phone.setFullName(dataForOnePhone.get("Nazwa"));
+            phone.setPrice(findNumberInString(dataForOnePhone.get("Cena")));
+            phone.setProcessor(dataForOnePhone.get("Procesor"));
+            phone.setGraphics(dataForOnePhone.get("Układ graficzny"));
 
-                    }
+            double ram = findNumberInString(dataForOnePhone.get("Pamięć RAM").replaceAll(",","."));
+            phone.setRam(ram);
+            String tempBuiltMemory = dataForOnePhone.get("Pamięć wbudowana").replaceAll(",",".");
+            if(tempBuiltMemory.contains("+")){
+                int index = tempBuiltMemory.indexOf("+");
+                if(index!=-1){
+                    tempBuiltMemory = tempBuiltMemory.substring(0, index);
                 }
-                if(!camera.isEmpty()){
-                    phone.setCameraMPX(camera.get(0));
-                }
-                if(camera.size()==2){
-                    phone.setFrontCameraMPX(camera.get(1));
-                }
             }
-            if(key.contains("Bateria")){
-                String temp = value.replaceAll(",",".");
-                phone.setCapacityOfBattery(findNumberInString(temp));
-            }
-            if(key.contains("Cena")){
-                String temp = value.replaceAll(",",".");
-                phone.setPrice(Double.parseDouble(temp));
-            }
-            if(key.contains("Dodatkowe informacje")){
-
-            }
+            phone.setBuiltInMemory(findNumberInString(tempBuiltMemory));
+            phone.setTypeOfDisplay(dataForOnePhone.get("Typ ekranu"));
+            phone.setSizeOfDisplay(findNumberInString(dataForOnePhone.get("Przekątna ekranu").substring(0, dataForOnePhone.get("Przekątna ekranu").length()-1)));
+            phone.setResolutionOfDisplay(dataForOnePhone.get("Rozdzielczość ekranu"));
+            String tempCommunity[] = dataForOnePhone.get("Łączność").split("\\s+");
+            phone.setCommunication(tempCommunity);
+            phones.add(phone);
         }
     }
 
