@@ -18,7 +18,7 @@ public class PhonesDownloader {
     int numberOflooseData=0;
 
     public TreeMap<String, String> download(String url) throws IOException {
-        Connection connect = Jsoup.connect(url).timeout(10 * 3000);
+        Connection connect = Jsoup.connect(url).timeout(10 * 6000);
         Document document = connect.get();
         Elements all = document.getElementsByClass("product-item");//.tagName("data-product-name");//data-products-list-name=
         List<String> urls = new ArrayList<>();
@@ -32,7 +32,7 @@ public class PhonesDownloader {
         for (String u : urls) {
             values = new TreeMap<>();
             //System.out.println(u);
-            Connection connect2 = Jsoup.connect(u).timeout(10 * 3000);
+            Connection connect2 = Jsoup.connect(u).timeout(10 * 9000);
             Document document2 = connect2.get();
             String imageURL = document2.getElementsByClass("prettyphoto-fullscreen-item").select("a").first().attr("abs:href");
             //System.out.println(imageURL);
