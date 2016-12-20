@@ -3,7 +3,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,16 +24,19 @@ public class PhonesDownloader {
         List<String> urls = new ArrayList<>();
 
 
-        for (int i = 0; i < all.size(); i++) {
+        for (int i = 0; i < 2; i++) {
             String urlDetails = all.get(i).getElementsByClass("description-wrapper").select("a").first().attr("abs:href");
             urls.add(urlDetails);
         }
-        System.out.println(urls.size());
+        //System.out.println(urls.size());
         for (String u : urls) {
             values = new TreeMap<>();
             //System.out.println(u);
             Connection connect2 = Jsoup.connect(u).timeout(10 * 2000);
             Document document2 = connect2.get();
+            String imageURL = document2.getElementsByClass("prettyphoto-fullscreen-item").select("a").first().attr("abs:href");
+            //System.out.println(imageURL);
+            values.put("imageUrlXKom", imageURL);
             String fullName = document2.getElementsByClass("product-info").select("h1").text();
             values.put("Nazwa", fullName);
             String brand = document2.getElementsByClass("subheader").select("span").first().text();
@@ -67,7 +74,7 @@ public class PhonesDownloader {
         for (TreeMap<String, String> dataForOnePhone : dataForPhones) {
             int i=0;
             i+=1;
-            System.out.println("Nr: + " + i);
+            //System.out.println("Nr: + " + i);
             phone = new Phone();
             //System.out.println(dataForOnePhone.get("Cena").replaceAll(",","."));
             phone.setBrand(dataForOnePhone.get("Marka"));
@@ -76,7 +83,7 @@ public class PhonesDownloader {
             phone.setProcessor(dataForOnePhone.get("Procesor"));
             phone.setGraphics(dataForOnePhone.get("Układ graficzny"));
 
-            System.out.println(dataForOnePhone.get("Pamięć RAM"));
+            //System.out.println(dataForOnePhone.get("Pamięć RAM"));
             double ram = findNumberInString(dataForOnePhone.get("Pamięć RAM").replaceAll(",","."));
             phone.setRam(ram);
             String tempBuiltMemory = dataForOnePhone.get("Pamięć wbudowana").replaceAll(",",".");
@@ -95,15 +102,15 @@ public class PhonesDownloader {
 //                s.deleteCharAt(indexToRemove);
 //                tempDisplaySize = s.toString();
 //            }
-            System.out.println("Test " + tempDisplaySize);
+           // System.out.println("Test " + tempDisplaySize);
             phone.setSizeOfDisplay(findNumberInString(tempDisplaySize));
             phone.setResolutionOfDisplay(dataForOnePhone.get("Rozdzielczość ekranu"));
             String tempCommunity[] = dataForOnePhone.get("Łączność").split("\\s+");
             phone.setCommunication(tempCommunity);
             phone.setNavigation(dataForOnePhone.get("System nawigacji satelitarnej"));
             phone.setConnectors(dataForOnePhone.get("Złącza"));
-            System.out.println("Jest: " + dataForOnePhone.get("Bateria"));
-            //phone.setCapacityOfBattery(findNumberInString(dataForOnePhone.get("Bateria")));
+            //System.out.println("Jest: " + dataForOnePhone.get("Bateria"));
+            phone.setCapacityOfBattery(findNumberInString(dataForOnePhone.get("Bateria")));
 
             phone.setOperatingSystem(dataForOnePhone.get("Zainstalowany system operacyjny"));
 
@@ -124,6 +131,15 @@ public class PhonesDownloader {
             phone.setExtraInfo(dataForOnePhone.get("Dodatkowe informacje"));
             phone.setIncludedAccessories(dataForOnePhone.get("Dołączone akcesoria"));
             phone.setGuarantee(dataForOnePhone.get("Gwarancja"));
+            phone.setImageUrlXKom(dataForOnePhone.get("imageUrlXKom"));
+            String tempImgUrl = dataForOnePhone.get("imageUrlXKom");
+            try{
+                URL urlToImage = new URL(tempImgUrl);
+                byte[] temp = downloadUrl(urlToImage);
+                phone.setImageTab(temp);
+            }catch (MalformedURLException ex){
+                ex.printStackTrace();
+            }
 
             //pobierz jeszcze zdjecia
             phones.add(phone);
@@ -147,14 +163,9 @@ public class PhonesDownloader {
                     numberOfDot += 1;
                 }
             }
-            System.out.println("Number of dot kur.. " + numberOfDot + " text: " + text);
             if(numberOfDot>1){
-                System.out.println("I m here");
                 int index = text.lastIndexOf(".");
-                System.out.println("Index " + index);
                 if(index!=-1){
-
-                    //System.out.println("Numer of dot: " + numberOfDot + " v: " + text);
                     text = text.substring(0, index);
                 }
 
@@ -169,12 +180,31 @@ public class PhonesDownloader {
                 sBuffer.append(m.group());
 
             }
-            System.out.println(sBuffer);
             return Double.parseDouble(sBuffer.toString());
         }catch (Exception e){
             numberOflooseData+=1;
             text="0";
             return Double.parseDouble(text);
         }
+    }
+
+    private byte[] downloadUrl(URL toDownload) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        try {
+            byte[] chunk = new byte[4096];
+            int bytesRead;
+            InputStream stream = toDownload.openStream();
+
+            while ((bytesRead = stream.read(chunk)) > 0) {
+                outputStream.write(chunk, 0, bytesRead);
+            }
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return outputStream.toByteArray();
     }
 }

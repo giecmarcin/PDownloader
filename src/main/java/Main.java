@@ -16,50 +16,38 @@ public class Main {
 
         List<Phone> allPhones = new ArrayList<Phone>();
         String url1 = "http://www.x-kom.pl/g-4/c/1590-smartfony-i-telefony.html?per_page=90&f[201][61322]=1&f[201][61325]=1&f[201][61324]=1&f[201][61323]=1";
-//        String url2 = "http://www.x-kom.pl/g-4/c/1590-smartfony-i-telefony.html?page=2&per_page=90&f[201][61322]=1&f[201][61325]=1&f[201][61324]=1&f[201][61323]=1";
-//        String url3 = "http://www.x-kom.pl/g-4/c/1590-smartfony-i-telefony.html?page=3&per_page=90&f[201][61322]=1&f[201][61325]=1&f[201][61324]=1&f[201][61323]=1";
-//        String url4 = "http://www.x-kom.pl/g-4/c/1590-smartfony-i-telefony.html?page=4&per_page=90&f[201][61322]=1&f[201][61325]=1&f[201][61324]=1&f[201][61323]=1";
-//        String url5 = "http://www.x-kom.pl/g-4/c/1590-smartfony-i-telefony.html?page=5&per_page=90&f[201][61322]=1&f[201][61325]=1&f[201][61324]=1&f[201][61323]=1";
+        String url2 = "http://www.x-kom.pl/g-4/c/1590-smartfony-i-telefony.html?page=2&per_page=90&f[201][61322]=1&f[201][61325]=1&f[201][61324]=1&f[201][61323]=1";
+        String url3 = "http://www.x-kom.pl/g-4/c/1590-smartfony-i-telefony.html?page=3&per_page=90&f[201][61322]=1&f[201][61325]=1&f[201][61324]=1&f[201][61323]=1";
+        String url4 = "http://www.x-kom.pl/g-4/c/1590-smartfony-i-telefony.html?page=4&per_page=90&f[201][61322]=1&f[201][61325]=1&f[201][61324]=1&f[201][61323]=1";
+        String url5 = "http://www.x-kom.pl/g-4/c/1590-smartfony-i-telefony.html?page=5&per_page=90&f[201][61322]=1&f[201][61325]=1&f[201][61324]=1&f[201][61323]=1";
 //
 //        System.out.println("Hello World!");
-       PhonesDownloader phonesDownloader = new PhonesDownloader();
-       phonesDownloader.download(url1);
-       allPhones.addAll(phonesDownloader.convertToList());
-      //allPhones.addAll(phonesDownloader.download(url1));
-//        allPhones.addAll(phonesDownloader.download(url2));
-//        allPhones.addAll(phonesDownloader.download(url3));
-//        allPhones.addAll(phonesDownloader.download(url4));
-//        allPhones.addAll(phonesDownloader.download(url5));
-//
-//        int id = 1;
-//        for (Phone p : allPhones) {
-//            p.setId(id);
-//            id += 1;
-//
-//            if(p.getColour().isEmpty()){
-//                p.setColour(randomColour());
-//            }
-//            if (checkTextHaveNumbers(p.getColour())) {
-//                p.setColour(randomColour());
-//            }
-//
-//            if (p.getColour().toLowerCase().contains("czujnik")) {
-//                p.setColour(randomColour());
-//            }
-//
-//            String temp = p.getFullName().replaceAll("\\s+", "");
-//            String jpg1 = temp + "Img1";
-//            String jpg2 = temp + "Img2";
-//            String jpg3 = temp + "Img3";
-//            p.setImagesUrl(new String[]{jpg1, jpg2, jpg3});
-//        }
-//
+       PhonesDownloader phonesDownloader1 = new PhonesDownloader();
+       phonesDownloader1.download(url1);
+       allPhones.addAll(phonesDownloader1.convertToList());
+
+        PhonesDownloader phonesDownloader2 = new PhonesDownloader();
+        phonesDownloader2.download(url2);
+        allPhones.addAll(phonesDownloader2.convertToList());
+
+        PhonesDownloader phonesDownloader3 = new PhonesDownloader();
+        phonesDownloader3.download(url3);
+        allPhones.addAll(phonesDownloader3.convertToList());
+
+        PhonesDownloader phonesDownloader4 = new PhonesDownloader();
+        phonesDownloader4.download(url4);
+        allPhones.addAll(phonesDownloader4.convertToList());
+
+        PhonesDownloader phonesDownloader5 = new PhonesDownloader();
+        phonesDownloader5.download(url5);
+        allPhones.addAll(phonesDownloader5.convertToList());
+
         ObjectMapper objectMapper = new ObjectMapper();
         //Set pretty printing of json
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         String arrayToJson = "";
         try {
-            FileWriter fw = new FileWriter("phones-data1.json");
+            FileWriter fw = new FileWriter("D:\\phones-all-data.json");
             arrayToJson = objectMapper.writeValueAsString(allPhones);
             System.out.println("1. Convert List of person objects to JSON :");
             System.out.println(arrayToJson);

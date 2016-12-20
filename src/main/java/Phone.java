@@ -27,10 +27,12 @@ public class Phone {
     private double weight;
     private String colour="";
     private String[] imagesUrl;
+    private String imageUrlXKom;
     private String extraInfo;
     private String guarantee;
     private String resolutionRecordingVideo;
     private String includedAccessories;
+    private byte[] imageTab;
 
     public Phone() {
     }
@@ -265,5 +267,21 @@ public class Phone {
 
     public void setIncludedAccessories(String includedAccessories) {
         this.includedAccessories = includedAccessories;
+    }
+
+    public String getImageUrlXKom() {
+        return imageUrlXKom;
+    }
+
+    public void setImageUrlXKom(String imageUrlXKom) {
+        this.imageUrlXKom = imageUrlXKom;
+    }
+
+    public byte[] getImageTab() {
+        return imageTab;
+    }
+
+    public void setImageTab(byte[] imageTab) {
+        this.imageTab = imageTab;
     }
 }
