@@ -142,6 +142,9 @@ public class PhonesDownloader {
             }
 
             //pobierz jeszcze zdjecia
+            String pathToImageURL = phone.getFullName().replaceAll("\\s+","")+"Img1";
+            String temp2[] = {pathToImageURL};
+            phone.setImagesUrl(temp2);
             phones.add(phone);
         }
         System.out.println("Stracone dane: " + numberOflooseData);
