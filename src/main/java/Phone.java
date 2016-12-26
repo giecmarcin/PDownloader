@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Marcin on 16.12.2016.
  */
@@ -26,24 +29,25 @@ public class Phone {
     private double height;
     private double weight;
     private String colour="";
-    private String[] imagesUrl;
+    //private String[] imagesUrl;
     private String imageUrlXKom;
     private String extraInfo;
     private String guarantee;
     private String resolutionRecordingVideo;
     private String includedAccessories;
-    private byte[] imageTab;
+    private List<byte[]> imageTabs = new ArrayList<>();
+    //private byte[] imageTab;
 
     public Phone() {
     }
 
-    public String[] getImagesUrl() {
-        return imagesUrl;
-    }
+//    public String[] getImagesUrl() {
+//        return imagesUrl;
+//    }
 
-    public void setImagesUrl(String[] imagesUrl) {
-        this.imagesUrl = imagesUrl;
-    }
+//    public void setImagesUrl(String[] imagesUrl) {
+//        this.imagesUrl = imagesUrl;
+//    }
 
     public int getId() {
         return id;
@@ -277,11 +281,19 @@ public class Phone {
         this.imageUrlXKom = imageUrlXKom;
     }
 
-    public byte[] getImageTab() {
-        return imageTab;
+//    public byte[] getImageTab() {
+//        return imageTab;
+//    }
+//
+//    public void setImageTab(byte[] imageTab) {
+//        this.imageTab = imageTab;
+//    }
+
+    public List<byte[]> getImageTabs() {
+        return imageTabs;
     }
 
-    public void setImageTab(byte[] imageTab) {
-        this.imageTab = imageTab;
+    public void setImageTabs(List<byte[]> imageTabs) {
+        this.imageTabs = imageTabs;
     }
 }

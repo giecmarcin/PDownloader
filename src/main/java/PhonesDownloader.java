@@ -136,15 +136,15 @@ public class PhonesDownloader {
             try{
                 URL urlToImage = new URL(tempImgUrl);
                 byte[] temp = downloadUrl(urlToImage);
-                phone.setImageTab(temp);
+                phone.getImageTabs().add(temp);
             }catch (MalformedURLException ex){
                 ex.printStackTrace();
             }
 
-            //pobierz jeszcze zdjecia
-            String pathToImageURL = phone.getFullName().replaceAll("\\s+","")+"Img1";
-            String temp2[] = {pathToImageURL};
-            phone.setImagesUrl(temp2);
+
+            //String pathToImageURL = phone.getFullName().replaceAll("\\s+","")+"Img1";
+            //String temp2[] = {pathToImageURL};
+            //phone.setImagesUrl(temp2);
             phones.add(phone);
         }
         System.out.println("Stracone dane: " + numberOflooseData);

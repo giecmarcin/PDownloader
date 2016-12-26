@@ -47,7 +47,7 @@ public class Main {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         String arrayToJson = "";
         try {
-            FileWriter fw = new FileWriter("D:\\phones-all-data.json");
+            FileWriter fw = new FileWriter("D:\\phones-final.json");
             arrayToJson = objectMapper.writeValueAsString(allPhones);
             System.out.println("1. Convert List of person objects to JSON :");
             System.out.println(arrayToJson);
